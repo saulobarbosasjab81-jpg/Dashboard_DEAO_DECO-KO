@@ -172,7 +172,7 @@ footer{margin-top:22px;font-size:9px;color:#30363D;font-family:'Courier New',mon
   </div>
   <div class="hdr-right">
     <div class="period-badge">&#9679; Período: 09/05 – 07/06/2026 · 30 dias</div>
-    <div class="hdr-date">Última atualização: 22/05/2026 · Dia 14 de 30</div>
+    <div class="hdr-date" id="hdr-date">Última atualização: 22/05/2026 · Dia 14 de 30</div>
   </div>
 </header>
 
@@ -714,6 +714,8 @@ function render(data){
   var now=new Date();
   var ts=String(now.getDate()).padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')+'/'+now.getFullYear()
     +' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  var lastSheetDate=D.dates.length?D.dates[D.dates.length-1]+'/'+now.getFullYear():ts.split(' ')[0];
+  if(el('hdr-date')) el('hdr-date').textContent='Última atualização: '+lastSheetDate+' · Dia '+D.elapsedDays+' de '+D.totalDays;
   buildSvcSidebar(D);
   el('footer-ts').textContent='COMARA · PAINEL GERENCIAL · Última atualização: '+ts;
 }
@@ -763,10 +765,16 @@ function renderDetailChart(svc,data){
     '<span>Desvio: <b style="color:'+dc+';">'+devStr+'</b></span>',
     '<span>Chuva acum: '+data.chuvaAcum+' mm</span>'
   ].join('');
+  var DSEM=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  var yearNow=new Date().getFullYear();
   var days=data.elapsedDays||1;
   var dailySlice=svc.daily.slice(0,days);
   var rainSlice=data.chuva.slice(0,days);
-  var labelsSlice=data.dates.slice(0,days);
+  var labelsSlice=data.dates.slice(0,days).map(function(d){
+    var p=d.split('/');
+    var dt=new Date(yearNow,parseInt(p[1])-1,parseInt(p[0]));
+    return [d,DSEM[dt.getDay()]];
+  });
   cDetail=new Chart(ctx,{type:'bar',data:{labels:labelsSlice,datasets:[
     {label:svc.name+' ('+svc.unit+')',data:dailySlice,
      backgroundColor:'rgba(48,162,255,0.65)',borderColor:'rgba(48,162,255,0.9)',
