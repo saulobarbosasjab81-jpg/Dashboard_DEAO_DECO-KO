@@ -406,6 +406,107 @@ function parseSheet(text){
   } catch(e){console.error('parseSheet:',e);return null;}
 }
 
+// ── JSONP (sem CORS) ───────────────────────────────────
+function parseGvizTable(table){
+  try{
+    var rows=table.rows;
+    var dateRowIdx=-1;
+    for(var i=0;i<Math.min(rows.length,8);i++){
+      var c=rows[i].c||[];
+      for(var j=0;j<c.length;j++){
+        var cell=c[j];if(!cell) continue;
+        var f=String(cell.f||'').trim();
+        if(/\d{2}\/\d{2}\/\d{2}/.test(f)){dateRowIdx=i;break;}
+      }
+      if(dateRowIdx>=0) break;
+    }
+    if(dateRowIdx<0) return null;
+    var dateRow=rows[dateRowIdx].c||[];
+    var allDates=[];
+    for(var j=1;j<=30;j++){
+      var cell=dateRow[j];
+      var f=cell?String(cell.f||'').trim():'';
+      var v=cell?String(cell.v||'').trim():'';
+      var d=f||v;
+      allDates.push(d&&/\d{2}\/\d{2}/.test(d)?d.substring(0,5):'');
+    }
+    var SVC_KEYS=[
+      {kw:'Borrachudo', name:'Tratamento Borrachudo e Reciclagem',unit:'m²'},
+      {kw:'Canaletas',  name:'Canaletas',unit:'und'},
+      {kw:'Trincheira', name:'Trincheira Drenante',unit:'m'},
+      {kw:'Corte de Placas',    name:'Corte de Placas',unit:'m'},
+      {kw:'Placas de Concreto', name:'Placas de Concreto',unit:'und'},
+      {kw:'Usinagem',   name:'Usinagem de Concreto',unit:'m³'},
+      {kw:'Selagem',    name:'Selagem',unit:'m'},
+      {kw:'Kit Drenante',name:'Kit Drenante',unit:'kit'},
+      {kw:'Balsa',       name:'Descarregamento da Balsa',unit:'dia'},
+      {kw:'Descarregamento',name:'Descarregamento da Balsa',unit:'dia'},
+    ];
+    var seen=new Set(),services=[],chuvaArr=[],perdaConcreto=0,elapsedDays=0;
+    for(var i=dateRowIdx+1;i<rows.length;i++){
+      var cells=rows[i].c||[];
+      var nc=cells[0];
+      var rawName=String(nc?(nc.v||nc.f||''):'').trim();
+      if(!rawName) continue;
+      var daily=[],lastFilled=0;
+      for(var j=1;j<=30;j++){
+        var cell=cells[j];
+        var v=cell&&cell.v!==null&&cell.v!==undefined?cell.v:null;
+        if(v!==null&&v!==''&&!isNaN(parseFloat(String(v)))){
+          daily.push(parseFloat(String(v))||0);lastFilled=j;
+        } else { daily.push(null); }
+      }
+      elapsedDays=Math.max(elapsedDays,lastFilled);
+      var nv=function(c){return c&&c.v!==null&&c.v!==undefined?parseFloat(String(c.v))||0:0;};
+      var acum=nv(cells[31]),meta=nv(cells[32]);
+      var pctRaw=nv(cells[33]);
+      var pct=pctRaw>0&&pctRaw<=1?+(pctRaw*100).toFixed(2):pctRaw;
+      var low=rawName.toLowerCase();
+      if(low.includes('chuva')){
+        for(var d=0;d<elapsedDays;d++) chuvaArr.push(daily[d]||0);
+      } else if(low.includes('perda')){
+        perdaConcreto=acum>0&&acum<=1?+(acum*100).toFixed(2):acum;
+      } else {
+        var match=SVC_KEYS.find(function(k){return rawName.includes(k.kw);});
+        if(match&&!seen.has(match.name)){
+          seen.add(match.name);
+          services.push({name:match.name,unit:match.unit,acum:acum,meta:meta,pct:pct,
+            daily:daily.slice(0,elapsedDays).map(function(v){return v||0;})});
+        }
+      }
+    }
+    var order=[...new Set(SVC_KEYS.map(function(k){return k.name;}))];
+    services.sort(function(a,b){return order.indexOf(a.name)-order.indexOf(b.name);});
+    var chuvaAcum=+chuvaArr.reduce(function(s,v){return s+v;},0).toFixed(1);
+    return {elapsedDays,totalDays:30,chuvaAcum,perdaConcreto,
+      dates:allDates.slice(0,elapsedDays),chuva:chuvaArr.slice(0,elapsedDays),services};
+  } catch(e){console.error('parseGvizTable:',e);return null;}
+}
+
+function loadViaJSONP(){
+  return new Promise(function(resolve,reject){
+    var cbName='_gviz_'+Date.now();
+    var script=document.createElement('script');
+    var timer=setTimeout(function(){
+      delete window[cbName];
+      if(script.parentNode) document.head.removeChild(script);
+      reject(new Error('timeout'));
+    },12000);
+    window[cbName]=function(resp){
+      clearTimeout(timer);delete window[cbName];
+      if(script.parentNode) document.head.removeChild(script);
+      if(resp&&resp.table){
+        var parsed=parseGvizTable(resp.table);
+        if(parsed&&parsed.services&&parsed.services.length>0) resolve(parsed);
+        else reject(new Error('sem servicos'));
+      } else { reject(new Error('gviz inválido')); }
+    };
+    script.onerror=function(){clearTimeout(timer);delete window[cbName];reject(new Error('erro JSONP'));};
+    script.src='https://docs.google.com/spreadsheets/d/1kY05N5ujb_u393yEfw535fr1IFjkfaHN/gviz/tq?tqx=out:json;responseHandler:'+cbName;
+    document.head.appendChild(script);
+  });
+}
+
 // ── BENCHMARK ─────────────────────────────────────────
 // 3 critérios: Balsa (janela d8-d16), Bloqueados (d10-d30), Linear
 function getBenchmark(svc,elapsed,total){
@@ -598,11 +699,7 @@ async function loadData(){
   var syncEl=el('sync-status');
   if(syncEl) syncEl.innerHTML='<span class="status-dot"></span>Sincronizando...';
   try{
-    var resp=await fetch(CSV_URL);
-    if(!resp.ok) throw new Error('HTTP '+resp.status);
-    var text=await resp.text();
-    var parsed=parseSheet(text);
-    if(!parsed||!parsed.services||parsed.services.length===0) throw new Error('sem dados');
+    var parsed=await loadViaJSONP();
     render(parsed);
     if(syncEl) syncEl.innerHTML='<span class="status-dot"></span>Sincronizado · Google Sheets';
   } catch(e){
