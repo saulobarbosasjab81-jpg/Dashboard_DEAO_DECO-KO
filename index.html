@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Controle Gerencial de Obra Ã¢Â€Â” COMARA</title>
+<title>Controle Gerencial de Obra — COMARA</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -161,62 +161,62 @@ footer{margin-top:22px;font-size:9px;color:#30363D;font-family:'Courier New',mon
     <h1>PAINEL GERENCIAL</h1>
   </div>
   <div class="hdr-right">
-    <div class="period-badge">&#9679; PerÃƒÂ­odo: 09/05 Ã¢Â€Â“ 07/06/2026 Ã‚Â· 30 dias</div>
-    <div class="hdr-date">ÃƒÂšltima atualizaÃƒÂ§ÃƒÂ£o: 22/05/2026 Ã‚Â· Dia 14 de 30</div>
+    <div class="period-badge">&#9679; Período: 09/05 – 07/06/2026 · 30 dias</div>
+    <div class="hdr-date">Última atualização: 22/05/2026 · Dia 14 de 30</div>
   </div>
 </header>
 
 <!-- KPIs -->
 <div class="kpi-grid">
   <div class="kpi white">
-    <div class="kpi-lbl">PerÃƒÂ­odo Decorrido</div>
-    <div class="kpi-val" id="kpi-periodo">Ã¢Â€Â”</div>
-    <div class="kpi-sub" id="kpi-periodo-sub">Ã¢Â€Â” de 30 dias ÃƒÂºteis</div>
+    <div class="kpi-lbl">Período Decorrido</div>
+    <div class="kpi-val" id="kpi-periodo">—</div>
+    <div class="kpi-sub" id="kpi-periodo-sub">— de 30 dias úteis</div>
   </div>
   <div class="kpi blue">
-    <div class="kpi-lbl">ConcluÃƒÂ­dos</div>
-    <div class="kpi-val" id="kpi-concluido">Ã¢Â€Â”</div>
+    <div class="kpi-lbl">Concluídos</div>
+    <div class="kpi-val" id="kpi-concluido">—</div>
     <div class="kpi-sub">meta 100% atingida</div>
   </div>
   <div class="kpi green">
     <div class="kpi-lbl">Adiantados</div>
-    <div class="kpi-val" id="kpi-adiantado">Ã¢Â€Â”</div>
+    <div class="kpi-val" id="kpi-adiantado">—</div>
     <div class="kpi-sub">acima da ref. prevista</div>
   </div>
   <div class="kpi amber">
     <div class="kpi-lbl">Risco de Atraso</div>
-    <div class="kpi-val" id="kpi-risco">Ã¢Â€Â”</div>
-    <div class="kpi-sub">desvio entre 0 e Ã¢ÂˆÂ’5pp</div>
+    <div class="kpi-val" id="kpi-risco">—</div>
+    <div class="kpi-sub">desvio entre 0 e −5pp</div>
   </div>
   <div class="kpi red">
     <div class="kpi-lbl">Atrasados</div>
-    <div class="kpi-val" id="kpi-atrasado">Ã¢Â€Â”</div>
-    <div class="kpi-sub">desvio abaixo de Ã¢ÂˆÂ’5pp</div>
+    <div class="kpi-val" id="kpi-atrasado">—</div>
+    <div class="kpi-sub">desvio abaixo de −5pp</div>
   </div>
   <div class="kpi purple">
     <div class="kpi-lbl">Chuva Acumulada</div>
-    <div class="kpi-val" id="kpi-chuva">Ã¢Â€Â”</div>
+    <div class="kpi-val" id="kpi-chuva">—</div>
     <div class="kpi-sub" id="kpi-chuva-sub">dias monitorados</div>
   </div>
   <div class="kpi gray">
     <div class="kpi-lbl">Perda de Concreto</div>
-    <div class="kpi-val" id="kpi-perda">Ã¢Â€Â”</div>
-    <div class="kpi-sub">Meta mÃƒÂ¡x. 5,00%</div>
+    <div class="kpi-val" id="kpi-perda">—</div>
+    <div class="kpi-sub">Meta máx. 5,00%</div>
   </div>
 </div>
 
-<!-- BARRA DE PROGRESSO POR SERVIÃƒÂ‡O -->
+<!-- BARRA DE PROGRESSO POR SERVIÇO -->
 <div class="prog-bar-wrap">
   <div style="font-size:11px;font-weight:600;color:#58AEFF;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">
-    AvanÃƒÂ§o FÃƒÂ­sico por ServiÃƒÂ§o
+    Avanço Físico por Serviço
   </div>
   <div style="display:flex;gap:18px;margin-bottom:10px;font-size:10px;font-family:'Courier New',monospace;">
-    <span style="color:#484F58;">Ã¢Â€Â” linha branca = referÃƒÂªncia prevista</span>
-    <span style="color:#30A2FF;">Ã¢Â˜Â… adj. = mÃƒÂ©trica ajustada (bloqueio dias 1Ã¢Â€Â“9 Ã‚Â· ref: 23,8%)</span>
+    <span style="color:#484F58;">— linha branca = referência prevista</span>
+    <span style="color:#30A2FF;">★ adj. = métrica ajustada (bloqueio dias 1–9 · ref: 23,8%)</span>
     <span style="color:#484F58;">demais = linear (ref: 46,7%)</span>
   </div>
   <div class="prog-header">
-    <span>ServiÃƒÂ§o</span>
+    <span>Serviço</span>
     <span>Progresso Visual</span>
     <span style="text-align:right">% Real</span>
     <span style="text-align:right">Acumulado</span>
@@ -225,51 +225,51 @@ footer{margin-top:22px;font-size:9px;color:#30363D;font-family:'Courier New',mon
   <div id="prog-rows"></div>
 </div>
 
-<!-- GRÃƒÂFICOS -->
+<!-- GRÁFICOS -->
 <div class="charts-grid">
   <div class="chart-card">
-    <div class="chart-title">Curva S Ã¢Â€Â” AvanÃƒÂ§o FÃƒÂ­sico MÃƒÂ©dio</div>
-    <div class="chart-sub">Acumulado diÃƒÂ¡rio real vs previsto ajustado (bloqueio dias 1Ã¢Â€Â“9 aplicado)</div>
+    <div class="chart-title">Curva S — Avanço Físico Médio</div>
+    <div class="chart-sub">Acumulado diário real vs previsto ajustado (bloqueio dias 1–9 aplicado)</div>
     <div class="legend">
       <span class="legend-item"><span class="ldot" style="background:#30A2FF;"></span>Real</span>
       <span class="legend-item"><span class="lline"></span>Previsto ajustado</span>
     </div>
-    <div class="chart-wrap"><canvas id="curvaS" role="img" aria-label="Curva S de avanÃƒÂ§o fÃƒÂ­sico mÃƒÂ©dio">Progresso real vs planejado por dia</canvas></div>
+    <div class="chart-wrap"><canvas id="curvaS" role="img" aria-label="Curva S de avanço físico médio">Progresso real vs planejado por dia</canvas></div>
   </div>
 
   <div class="chart-card" style="display:flex;flex-direction:column;align-items:stretch;">
-    <div class="chart-title">Status dos ServiÃƒÂ§os</div>
-    <div class="chart-sub">DistribuiÃƒÂ§ÃƒÂ£o por situaÃƒÂ§ÃƒÂ£o atual</div>
+    <div class="chart-title">Status dos Serviços</div>
+    <div class="chart-sub">Distribuição por situação atual</div>
     <div class="pie3d-container">
-      <canvas id="pieStatus" role="img" aria-label="Pizza de status dos serviÃƒÂ§os">ConcluÃƒÂ­do Ã‚Â· Adiantado Ã‚Â· Risco Ã‚Â· Atrasado</canvas>
+      <canvas id="pieStatus" role="img" aria-label="Pizza de status dos serviços">Concluído · Adiantado · Risco · Atrasado</canvas>
     </div>
     <div class="pie3d-shadow"></div>
     <div class="pie-legend" id="pie-legend"></div>
   </div>
 
   <div class="chart-card">
-    <div class="chart-title">ProduÃƒÂ§ÃƒÂ£o DiÃƒÂ¡ria Ã¢Â€Â” Principais ServiÃƒÂ§os</div>
-    <div class="chart-sub">ProduÃƒÂ§ÃƒÂ£o bruta por dia (unidades normalizadas)</div>
+    <div class="chart-title">Produção Diária — Principais Serviços</div>
+    <div class="chart-sub">Produção bruta por dia (unidades normalizadas)</div>
     <div class="legend">
       <span class="legend-item"><span class="ldot" style="background:#3FB950;"></span>Reciclagem</span>
       <span class="legend-item"><span class="ldot" style="background:#30A2FF;"></span>Placas de Concreto</span>
       <span class="legend-item"><span class="ldot" style="background:#D29922;"></span>Canaletas</span>
     </div>
-    <div class="chart-wrap"><canvas id="dailyProd" role="img" aria-label="ProduÃƒÂ§ÃƒÂ£o diÃƒÂ¡ria dos principais serviÃƒÂ§os">ProduÃƒÂ§ÃƒÂ£o por dia</canvas></div>
+    <div class="chart-wrap"><canvas id="dailyProd" role="img" aria-label="Produção diária dos principais serviços">Produção por dia</canvas></div>
   </div>
 </div>
 
 <!-- LINHA INFERIOR -->
 <div class="bottom-grid">
   <div class="chart-card">
-    <div class="chart-title">PrecipitaÃƒÂ§ÃƒÂ£o DiÃƒÂ¡ria</div>
-    <div class="chart-sub">Chuva registrada (mm) Ã¢Â€Â” 09 a 22/mai/26</div>
-    <div class="rain-wrap"><canvas id="rainChart" role="img" aria-label="GrÃƒÂ¡fico de chuva diÃƒÂ¡ria">Chuva diÃƒÂ¡ria em mm</canvas></div>
+    <div class="chart-title">Precipitação Diária</div>
+    <div class="chart-sub">Chuva registrada (mm) — 09 a 22/mai/26</div>
+    <div class="rain-wrap"><canvas id="rainChart" role="img" aria-label="Gráfico de chuva diária">Chuva diária em mm</canvas></div>
   </div>
   <div class="quality-card">
-    <div class="chart-title" style="margin-bottom:12px;">Resumo Executivo por ServiÃƒÂ§o</div>
+    <div class="chart-title" style="margin-bottom:12px;">Resumo Executivo por Serviço</div>
     <div class="q-row">
-      <span style="font-size:10px;color:#6E7681;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em;">SERVIÃƒÂ‡O</span>
+      <span style="font-size:10px;color:#6E7681;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em;">SERVIÇO</span>
       <span style="font-size:10px;color:#6E7681;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em;">ACUM / META</span>
       <span style="font-size:10px;color:#6E7681;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em;">DESVIO</span>
     </div>
@@ -278,7 +278,7 @@ footer{margin-top:22px;font-size:9px;color:#30363D;font-family:'Courier New',mon
 </div>
 
 </div><!-- /#app-wrap -->
-<footer>COMARA Ã‚Â· Controle Gerencial de Obra Ã‚Â· Dados: planilha Controle Gerencial Ã‚Â· 22/mai/2026</footer>
+<footer>COMARA · Controle Gerencial de Obra · Dados: planilha Controle Gerencial · 22/mai/2026</footer>
 
 <script>
 const CSV_URL='https://docs.google.com/spreadsheets/d/1kY05N5ujb_u393yEfw535fr1IFjkfaHN/pub?output=csv';
@@ -292,21 +292,21 @@ const FALLBACK={
   dates:['09/05','10/05','11/05','12/05','13/05','14/05','15/05','16/05','17/05','18/05','19/05','20/05','21/05','22/05'],
   chuva:[3,0,5,4.5,8.5,0,2,0,11.5,0,2,6,12,1],
   services:[
-    {name:'Tratamento Borrachudo e Reciclagem',unit:'mÃ‚Â²',  acum:1552,  meta:7200,   pct:21.56,daily:[0,0,0,360,296,0,0,0,0,400,360,0,0,136]},
+    {name:'Tratamento Borrachudo e Reciclagem',unit:'m²',  acum:1552,  meta:7200,   pct:21.56,daily:[0,0,0,360,296,0,0,0,0,400,360,0,0,136]},
     {name:'Canaletas',                          unit:'und', acum:149,   meta:1120,   pct:13.30,daily:[0,0,0,0,0,70,40,0,0,0,39,0,0,0]},
     {name:'Trincheira Drenante',                unit:'m',   acum:155,   meta:1100,   pct:14.09,daily:[0,0,50,45,60,0,0,0,0,0,0,0,0,0]},
     {name:'Corte de Placas',                    unit:'m',   acum:4078,  meta:4078,   pct:100.00,daily:[0,0,0,1080,1080,729,864,0,0,325,0,0,0,0]},
     {name:'Placas de Concreto',                 unit:'und', acum:100,   meta:264,    pct:37.88,daily:[0,0,0,0,0,0,0,0,0,18,18,24,17,23]},
-    {name:'Usinagem de Concreto',               unit:'mÃ‚Â³',  acum:506.5, meta:1356.55,pct:37.34,daily:[0,0,0,0,0,0,0,0,0,90,90,123,94.5,109]},
+    {name:'Usinagem de Concreto',               unit:'m³',  acum:506.5, meta:1356.55,pct:37.34,daily:[0,0,0,0,0,0,0,0,0,90,90,123,94.5,109]},
     {name:'Selagem',                            unit:'m',   acum:856,   meta:4900,   pct:17.47,daily:[0,0,0,0,0,0,0,0,0,0,288,0,240,328]},
     {name:'Kit Drenante',                       unit:'kit', acum:330,   meta:1400,   pct:23.57,daily:[0,0,0,0,0,0,0,0,0,0,0,30,210,90]},
     {name:'Descarregamento da Balsa',           unit:'dia', acum:7,     meta:9,      pct:77.78,daily:[0,0,0,0,0,0,0,1,1,1,1,1,1,1]},
   ]
 };
 
-// Ã¢Â”Â€Ã¢Â”Â€ PARSER Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€
+// ── PARSER ────────────────────────────────────────────
 function num(str){
-  // Converte nÃƒÂºmero brasileiro (vÃƒÂ­rgula decimal) para float
+  // Converte número brasileiro (vírgula decimal) para float
   return parseFloat((str||'').replace('%','').replace(/\./g,'').replace(',','.').trim())||0;
 }
 
@@ -324,7 +324,7 @@ function parseCSVLine(line){
 function parseSheet(text){
   try{
     const lines=text.split('\n');
-    // Linha de datas: contÃƒÂ©m padrÃƒÂ£o dd/mm/yy
+    // Linha de datas: contém padrão dd/mm/yy
     let dateRowIdx=-1;
     for(let i=0;i<Math.min(lines.length,8);i++){
       if(/\d{2}\/\d{2}\/\d{2}/.test(lines[i])){dateRowIdx=i;break;}
@@ -339,12 +339,12 @@ function parseSheet(text){
     }
 
     const SVC_KEYS=[
-      {kw:'Borrachudo',         name:'Tratamento Borrachudo e Reciclagem',unit:'mÃ‚Â²'},
+      {kw:'Borrachudo',         name:'Tratamento Borrachudo e Reciclagem',unit:'m²'},
       {kw:'Canaletas',          name:'Canaletas',                          unit:'und'},
       {kw:'Trincheira',         name:'Trincheira Drenante',                unit:'m'},
       {kw:'Corte de Placas',    name:'Corte de Placas',                   unit:'m'},
       {kw:'Placas de Concreto', name:'Placas de Concreto',                unit:'und'},
-      {kw:'Usinagem',           name:'Usinagem de Concreto',               unit:'mÃ‚Â³'},
+      {kw:'Usinagem',           name:'Usinagem de Concreto',               unit:'m³'},
       {kw:'Selagem',            name:'Selagem',                            unit:'m'},
       {kw:'Kit Drenante',       name:'Kit Drenante',                       unit:'kit'},
       {kw:'Balsa',              name:'Descarregamento da Balsa',           unit:'dia'},
@@ -360,7 +360,7 @@ function parseSheet(text){
       const rawName=(cols[0]||'').trim();
       if(!rawName) continue;
 
-      // Coleta valores diÃƒÂ¡rios (cols 1-30) com suporte a vÃƒÂ­rgula decimal
+      // Coleta valores diários (cols 1-30) com suporte a vírgula decimal
       const daily=[];let lastFilled=0;
       for(let j=1;j<=30;j++){
         const raw=(cols[j]||'').trim();
@@ -373,7 +373,7 @@ function parseSheet(text){
       }
       elapsedDays=Math.max(elapsedDays,lastFilled);
 
-      // Colunas de resumo (apÃƒÂ³s os 30 dias)
+      // Colunas de resumo (após os 30 dias)
       const acum=num(cols[31]);
       const meta=num(cols[32]);
       const pct =num(cols[33]);
@@ -406,18 +406,18 @@ function parseSheet(text){
   } catch(e){console.error('parseSheet:',e);return null;}
 }
 
-// Ã¢Â”Â€Ã¢Â”Â€ BENCHMARK Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€
-// 3 critÃƒÂ©rios: Balsa (janela d8-d16), Bloqueados (d10-d30), Linear
+// ── BENCHMARK ─────────────────────────────────────────
+// 3 critérios: Balsa (janela d8-d16), Bloqueados (d10-d30), Linear
 function getBenchmark(svc,elapsed,total){
   const name=svc.name, meta=svc.meta||0;
-  // Balsa: janela prÃƒÂ³pria Ã¢Â€Â” usa meta do prÃƒÂ³prio serviÃƒÂ§o como duraÃƒÂ§ÃƒÂ£o
+  // Balsa: janela própria — usa meta do próprio serviço como duração
   if(name.includes('Balsa')||name.includes('Descarregamento')){
     if(elapsed<BALSA_START) return 0;
     const winElapsed=elapsed-BALSA_START+1;
     if(meta>0&&winElapsed>=meta) return 100;
     return meta>0 ? +(winElapsed/meta*100).toFixed(2) : 0;
   }
-  // Bloqueados: inÃƒÂ­cio efetivo no dia 10
+  // Bloqueados: início efetivo no dia 10
   if(BLOCKED_NAMES.some(function(n){return name.includes(n.split(' ')[0]);})){
     const eff=total-BLOCKED_DAYS;
     const el=Math.max(0,elapsed-BLOCKED_DAYS);
@@ -427,7 +427,7 @@ function getBenchmark(svc,elapsed,total){
   return +(elapsed/total*100).toFixed(2);
 }
 
-// Ã¢Â”Â€Ã¢Â”Â€ RENDER Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€
+// ── RENDER ────────────────────────────────────────────
 let cS=null,cD=null,cR=null,cP=null;
 Chart.defaults.color='#6E7681';
 Chart.defaults.borderColor='#21262D';
@@ -437,7 +437,7 @@ function render(data){
   const D=data;
   const pctPer=+(D.elapsedDays/D.totalDays*100).toFixed(1);
   el('kpi-periodo').innerHTML=pctPer+'<span style="font-size:13px">%</span>';
-  el('kpi-periodo-sub').textContent=D.elapsedDays+' de '+D.totalDays+' dias ÃƒÂºteis';
+  el('kpi-periodo-sub').textContent=D.elapsedDays+' de '+D.totalDays+' dias úteis';
   el('kpi-chuva').innerHTML=D.chuvaAcum+'<span style="font-size:12px">mm</span>';
   el('kpi-chuva-sub').textContent=D.elapsedDays+' dias monitorados';
   el('kpi-perda').innerHTML=D.perdaConcreto.toFixed(1)+'<span style="font-size:12px">%</span>';
@@ -458,7 +458,7 @@ function render(data){
   el('kpi-atrasado').textContent=nat;
 
   // Pizza
-  const pieL=['ConcluÃƒÂ­do','Adiantado','Risco','Atrasado'];
+  const pieL=['Concluído','Adiantado','Risco','Atrasado'];
   const pieV=[nc,na,nr,nat];
   const pieC=['#30A2FF','#3FB950','#D29922','#F85149'];
   const tot=svcComMeta.length||1;
@@ -483,19 +483,19 @@ function render(data){
     const dev=s.pct-bm;
     const isDone=s.pct>=100, isAhead=!isDone&&dev>0;
     let sc,sl,bc;
-    if(isDone)      {sc='done';sl='CONCLUÃƒÂDO';bc='#30A2FF';}
+    if(isDone)      {sc='done';sl='CONCLUÍDO';bc='#30A2FF';}
     else if(isAhead){sc='ok';  sl='ADIANTADO';bc='#3FB950';}
-    else if(dev>=-5){sc='warn';sl='ATENÃƒÂ‡ÃƒÂƒO';  bc='#D29922';}
+    else if(dev>=-5){sc='warn';sl='ATENÇÃO';  bc='#D29922';}
     else            {sc='crit';sl='ATRASADO'; bc='#F85149';}
     const ds=dev>=0?'+'+dev.toFixed(1)+'pp':dev.toFixed(1)+'pp';
     const af=s.acum>=1000?(s.acum/1000).toFixed(1)+'k':s.acum;
     const mf=s.meta>=1000?(s.meta/1000).toFixed(1)+'k':s.meta;
     let badge='',refTag;
     if(isBa){
-      badge=' <span style="color:#D29922;font-size:8px;">Ã¢ÂšÂ“</span>';
+      badge=' <span style="color:#D29922;font-size:8px;">⚓</span>';
       refTag='<span style="font-size:8px;color:#D29922;font-family:monospace;display:block;margin-top:2px;">ref.balsa: '+bm.toFixed(1)+'% (d'+BALSA_START+'-d'+(BALSA_START+s.meta-1)+')</span>';
     } else if(isB){
-      badge=' <span style="color:#30A2FF;font-size:8px;">Ã¢Â˜Â…</span>';
+      badge=' <span style="color:#30A2FF;font-size:8px;">★</span>';
       refTag='<span style="font-size:8px;color:#30A2FF;font-family:monospace;display:block;margin-top:2px;">ref.adj: '+bm.toFixed(1)+'%</span>';
     } else {
       refTag='<span style="font-size:8px;color:#484F58;font-family:monospace;display:block;margin-top:2px;">ref: '+bm.toFixed(1)+'%</span>';
@@ -512,7 +512,7 @@ function render(data){
     progEl.appendChild(row);
   });
 
-  // Curva S Ã¢Â€Â” previsto usa getBenchmark de cada serviÃƒÂ§o por dia (dinÃƒÂ¢mico)
+  // Curva S — previsto usa getBenchmark de cada serviço por dia (dinâmico)
   const n=svcComMeta.length||1;
   const avgReal=D.dates.map(function(_,d){
     const sum=svcComMeta.reduce(function(acc,svc){
@@ -539,19 +539,19 @@ function render(data){
       y:{grid:{color:'rgba(33,38,45,0.8)'},min:0,max:110,ticks:{font:{size:9},color:'#484F58',callback:function(v){return v+'%';}}}}}
   });
 
-  // ProduÃƒÂ§ÃƒÂ£o diÃƒÂ¡ria
+  // Produção diária
   const getSvc=function(nm){return D.services.find(function(s){return s.name.includes(nm);});};
   const borr=getSvc('Borrachudo'),plac=getSvc('Placas de Concreto'),can=getSvc('Canaletas');
   if(cD) cD.destroy();
   cD=new Chart(el('dailyProd'),{type:'bar',data:{labels:D.dates,datasets:[
     {label:'Reciclagem',data:borr?borr.daily:[],backgroundColor:'rgba(63,185,80,0.7)',borderRadius:3,borderSkipped:false},
-    {label:'Placas (ÃƒÂ—10)',data:plac?plac.daily.map(function(v){return v*10;}):[],backgroundColor:'rgba(48,162,255,0.7)',borderRadius:3,borderSkipped:false},
-    {label:'Canaletas (ÃƒÂ—4)',data:can?can.daily.map(function(v){return v*4;}):[],backgroundColor:'rgba(210,153,34,0.7)',borderRadius:3,borderSkipped:false}
+    {label:'Placas (×10)',data:plac?plac.daily.map(function(v){return v*10;}):[],backgroundColor:'rgba(48,162,255,0.7)',borderRadius:3,borderSkipped:false},
+    {label:'Canaletas (×4)',data:can?can.daily.map(function(v){return v*4;}):[],backgroundColor:'rgba(210,153,34,0.7)',borderRadius:3,borderSkipped:false}
   ]},options:{responsive:true,maintainAspectRatio:false,
     plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(13,17,23,0.92)',titleColor:'#58AEFF',bodyColor:'#C9D1D9',borderColor:'rgba(48,162,255,0.25)',borderWidth:1,
       callbacks:{label:function(c){
         var raw=[borr?borr.daily:[],plac?plac.daily:[],can?can.daily:[]][c.datasetIndex][c.dataIndex]||0;
-        var u=['mÃ‚Â²','und','und'][c.datasetIndex];
+        var u=['m²','und','und'][c.datasetIndex];
         return c.dataset.label.split('(')[0].trim()+': '+raw+' '+u;}}}},
     scales:{x:{grid:{color:'rgba(33,38,45,0.8)'},ticks:{font:{size:9},color:'#484F58',maxRotation:45}},
       y:{grid:{color:'rgba(33,38,45,0.8)'},ticks:{font:{size:9},color:'#484F58'},title:{display:true,text:'escala normalizada',font:{size:8},color:'#484F58'}}}}
@@ -590,10 +590,10 @@ function render(data){
   var now=new Date();
   var ts=String(now.getDate()).padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')+'/'+now.getFullYear()
     +' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
-  el('footer-ts').textContent='COMARA Ã‚Â· PAINEL GERENCIAL Ã‚Â· ÃƒÂšltima atualizaÃƒÂ§ÃƒÂ£o: '+ts;
+  el('footer-ts').textContent='COMARA · PAINEL GERENCIAL · Última atualização: '+ts;
 }
 
-// Ã¢Â”Â€Ã¢Â”Â€ CARGA Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€Ã¢Â”Â€
+// ── CARGA ─────────────────────────────────────────────
 async function loadData(){
   var syncEl=el('sync-status');
   if(syncEl) syncEl.innerHTML='<span class="status-dot"></span>Sincronizando...';
@@ -604,7 +604,7 @@ async function loadData(){
     var parsed=parseSheet(text);
     if(!parsed||!parsed.services||parsed.services.length===0) throw new Error('sem dados');
     render(parsed);
-    if(syncEl) syncEl.innerHTML='<span class="status-dot"></span>Sincronizado Ã‚Â· Google Sheets';
+    if(syncEl) syncEl.innerHTML='<span class="status-dot"></span>Sincronizado · Google Sheets';
   } catch(e){
     console.warn('Fallback:',e.message);
     render(FALLBACK);
