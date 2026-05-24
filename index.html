@@ -150,6 +150,16 @@ footer{margin-top:22px;font-size:9px;color:#30363D;font-family:'Courier New',mon
 .desvio.neg{color:#F85149;}
 .desvio.pos{color:#3FB950;}
 .desvio.zero{color:#30A2FF;}
+/* ── PAINEL DETALHE POR SERVIÇO ── */
+.detail-section{background:#161B22;border:.5px solid #21262D;border-radius:10px;padding:18px 20px;margin-top:18px;}
+.detail-body{display:grid;grid-template-columns:160px 1fr;gap:16px;align-items:start;margin-top:12px;}
+.svc-sidebar{display:flex;flex-direction:column;gap:5px;}
+.svc-btn{padding:8px 10px;background:#0D1117;border:1px solid #21262D;border-radius:6px;color:#8B949E;cursor:pointer;font-size:10px;text-align:left;line-height:1.4;transition:border-color .15s,color .15s;font-family:'Segoe UI',system-ui,sans-serif;}
+.svc-btn:hover{border-color:#484F58;color:#C9D1D9;}
+.svc-btn.active{background:rgba(48,162,255,0.1);border-color:#30A2FF;color:#30A2FF;font-weight:600;}
+.detail-info-bar{display:flex;gap:14px;flex-wrap:wrap;font-size:10px;color:#6E7681;font-family:'Courier New',monospace;padding:8px 12px;background:#0D1117;border-radius:6px;border:.5px solid #21262D;margin-bottom:8px;}
+.detail-chart-wrap{position:relative;height:280px;}
+@media(max-width:720px){.detail-body{grid-template-columns:1fr;}.svc-sidebar{flex-direction:row;flex-wrap:wrap;}}
 </style>
 </head>
 <body>
@@ -274,6 +284,19 @@ footer{margin-top:22px;font-size:9px;color:#30363D;font-family:'Courier New',mon
       <span style="font-size:10px;color:#6E7681;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em;">DESVIO</span>
     </div>
     <div id="summary-table"></div>
+  </div>
+</div>
+
+<!-- DETALHE POR SERVIÇO -->
+<div class="detail-section">
+  <div class="chart-title">Produção Diária por Serviço + Chuva</div>
+  <div class="chart-sub">Selecione um serviço na lateral para visualizar a produção diária e a precipitação no mesmo período</div>
+  <div class="detail-body">
+    <div class="svc-sidebar" id="svc-sidebar"></div>
+    <div>
+      <div class="detail-info-bar" id="detail-info">Carregando dados...</div>
+      <div class="detail-chart-wrap"><canvas id="svcDetailChart"></canvas></div>
+    </div>
   </div>
 </div>
 
@@ -691,7 +714,89 @@ function render(data){
   var now=new Date();
   var ts=String(now.getDate()).padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')+'/'+now.getFullYear()
     +' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  buildSvcSidebar(D);
   el('footer-ts').textContent='COMARA · PAINEL GERENCIAL · Última atualização: '+ts;
+}
+
+// ── DETALHE POR SERVIÇO ──────────────────────────────
+var cDetail=null;
+function buildSvcSidebar(data){
+  var sidebar=el('svc-sidebar');
+  if(!sidebar) return;
+  var prevSvc=sidebar.querySelector('.svc-btn.active');
+  var prevName=prevSvc?prevSvc.dataset.svc:null;
+  sidebar.innerHTML='';
+  var activeBtn=null;
+  data.services.forEach(function(svc){
+    var btn=document.createElement('button');
+    btn.className='svc-btn';
+    btn.textContent=svc.name
+      .replace('Tratamento Borrachudo e ','Borrachudo ')
+      .replace(' de Concreto','')
+      .replace('Descarregamento da Balsa','Descarreg. Balsa');
+    btn.dataset.svc=svc.name;
+    btn.onclick=function(){
+      document.querySelectorAll('.svc-btn').forEach(function(b){b.classList.remove('active');});
+      btn.classList.add('active');
+      renderDetailChart(svc,data);
+    };
+    sidebar.appendChild(btn);
+    if(svc.name===prevName) activeBtn=btn;
+  });
+  var first=activeBtn||sidebar.querySelector('.svc-btn');
+  if(first) first.click();
+}
+function renderDetailChart(svc,data){
+  var ctx=el('svcDetailChart');
+  if(!ctx) return;
+  if(cDetail) cDetail.destroy();
+  var bm=getBenchmark(svc,data.elapsedDays,data.totalDays);
+  var dev=svc.pct-bm;
+  var devStr=(dev>=0?'+':'')+dev.toFixed(1)+'pp';
+  var dc=svc.pct>=100?'#30A2FF':dev>0?'#3FB950':dev>=-5?'#D29922':'#F85149';
+  el('detail-info').innerHTML=[
+    '<span><b style="color:#C9D1D9;">'+svc.name+'</b></span>',
+    '<span>Acum: <b style="color:#58AEFF;">'+svc.acum+' '+svc.unit+'</b></span>',
+    '<span>Meta: '+svc.meta+' '+svc.unit+'</span>',
+    '<span>Real: <b>'+svc.pct.toFixed(1)+'%</b></span>',
+    '<span>Ref: '+bm.toFixed(1)+'%</span>',
+    '<span>Desvio: <b style="color:'+dc+';">'+devStr+'</b></span>',
+    '<span>Chuva acum: '+data.chuvaAcum+' mm</span>'
+  ].join('');
+  var days=data.elapsedDays||1;
+  var dailySlice=svc.daily.slice(0,days);
+  var rainSlice=data.chuva.slice(0,days);
+  var labelsSlice=data.dates.slice(0,days);
+  cDetail=new Chart(ctx,{type:'bar',data:{labels:labelsSlice,datasets:[
+    {label:svc.name+' ('+svc.unit+')',data:dailySlice,
+     backgroundColor:'rgba(48,162,255,0.65)',borderColor:'rgba(48,162,255,0.9)',
+     borderWidth:1,borderRadius:3,borderSkipped:false,yAxisID:'yProd',order:2},
+    {label:'Chuva (mm)',type:'line',data:rainSlice,
+     borderColor:'#D29922',backgroundColor:'rgba(210,153,34,0.10)',
+     pointBackgroundColor:'#D29922',pointRadius:3,pointHoverRadius:5,
+     borderWidth:1.5,fill:true,tension:.3,yAxisID:'yRain',order:1}
+  ]},options:{responsive:true,maintainAspectRatio:false,
+    interaction:{mode:'index',intersect:false},
+    plugins:{
+      legend:{display:true,position:'top',labels:{color:'#8B949E',font:{size:10},boxWidth:10,padding:12}},
+      tooltip:{backgroundColor:'rgba(13,17,23,0.92)',titleColor:'#58AEFF',bodyColor:'#C9D1D9',
+        borderColor:'rgba(48,162,255,0.25)',borderWidth:1,
+        callbacks:{label:function(c){
+          return c.dataset.yAxisID==='yRain'
+            ?'Chuva: '+c.parsed.y+' mm'
+            :svc.name.split(' ').slice(0,2).join(' ')+': '+c.parsed.y+' '+svc.unit;
+        }}}
+    },
+    scales:{
+      x:{grid:{color:'rgba(33,38,45,0.8)'},ticks:{font:{size:9},color:'#484F58',maxRotation:45}},
+      yProd:{position:'left',grid:{color:'rgba(33,38,45,0.8)'},
+        ticks:{font:{size:9},color:'#58AEFF'},
+        title:{display:true,text:svc.unit,font:{size:9},color:'#58AEFF'}},
+      yRain:{position:'right',grid:{drawOnChartArea:false},
+        ticks:{font:{size:9},color:'#D29922',callback:function(v){return v+' mm';}},
+        title:{display:true,text:'mm',font:{size:9},color:'#D29922'}}
+    }
+  }});
 }
 
 // ── CARGA ─────────────────────────────────────────────
