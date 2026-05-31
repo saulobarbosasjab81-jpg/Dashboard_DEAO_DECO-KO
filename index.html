@@ -170,10 +170,23 @@ h1{font-size:18px;font-weight:600;color:#E6EDF3;letter-spacing:.03em;}
 
 /* CHUVA */
 .rain-wrap{position:relative;width:100%;height:160px;}
-.perda-strip{margin-top:8px;border-top:0.5px solid #21262D;padding-top:6px;}
-.perda-strip-label{font-size:9px;color:#6E7681;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
-.perda-strip-vals{display:flex;gap:2px;}
-.perda-strip-val{flex:1;text-align:center;font-size:9px;font-family:'Courier New',monospace;padding:2px 1px;border-radius:3px;line-height:1.4;}
+.kpi-hint{font-size:9px;color:#484F58;margin-left:3px;cursor:help;opacity:.7;}
+#kpi-perda-wrap{position:relative;}
+.perda-popover{
+  display:none;position:absolute;top:calc(100% + 8px);left:50%;
+  transform:translateX(-50%);background:#161B22;
+  border:0.5px solid rgba(48,162,255,0.35);border-radius:8px;
+  padding:10px 12px;min-width:190px;z-index:200;
+  box-shadow:0 6px 24px rgba(0,0,0,0.65);pointer-events:none;
+}
+#kpi-perda-wrap:hover .perda-popover{display:block;}
+.perda-pop-title{font-size:9px;color:#6E7681;font-family:'Courier New',monospace;
+  text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px;
+  padding-bottom:5px;border-bottom:0.5px solid #21262D;}
+.perda-pop-row{display:flex;justify-content:space-between;align-items:center;
+  padding:2px 0;font-size:10px;font-family:'Courier New',monospace;}
+.perda-pop-date{color:#484F58;}
+.perda-pop-val{font-weight:700;}
 
 /* PERDA CONCRETO */
 .quality-card{background:#161B22;border:0.5px solid #21262D;border-radius:8px;padding:16px 18px;}
@@ -251,10 +264,14 @@ footer{margin-top:22px;font-size:9px;color:#30363D;font-family:'Courier New',mon
     <div class="kpi-val" id="kpi-chuva">—</div>
     <div class="kpi-sub" id="kpi-chuva-sub">dias monitorados</div>
   </div>
-  <div class="kpi gray">
-    <div class="kpi-lbl">Perda de Concreto</div>
+  <div class="kpi gray" id="kpi-perda-wrap">
+    <div class="kpi-lbl">Perda de Concreto<span class="kpi-hint">ⓘ</span></div>
     <div class="kpi-val" id="kpi-perda">—</div>
     <div class="kpi-sub">Meta máx. 5,00%</div>
+    <div class="perda-popover">
+      <div class="perda-pop-title">% perda por dia</div>
+      <div id="perda-pop-rows"></div>
+    </div>
   </div>
 </div>
 
@@ -328,10 +345,6 @@ footer{margin-top:22px;font-size:9px;color:#30363D;font-family:'Courier New',mon
     <div class="chart-title">Precipitação Diária</div>
     <div class="chart-sub">Chuva registrada (mm) — 09 a 22/mai/26</div>
     <div class="rain-wrap"><canvas id="rainChart" role="img" aria-label="Gráfico de chuva diária">Chuva diária em mm</canvas></div>
-    <div class="perda-strip">
-      <div class="perda-strip-label">Perda de Concreto (%/dia)</div>
-      <div id="perda-strip-vals" class="perda-strip-vals"></div>
-    </div>
   </div>
   <div class="quality-card">
     <div class="chart-title" style="margin-bottom:12px;">Resumo Executivo por Serviço</div>
@@ -886,19 +899,18 @@ function render(data){
         y:{grid:{color:'rgba(33,38,45,0.8)'},ticks:{font:{size:9},color:'#484F58',callback:function(v){return v+' mm';}}}}}
   });
 
-  // Strip de perda diária de concreto
-  var perdaEl=el('perda-strip-vals');
-  if(perdaEl&&D.perdaDiaria&&D.perdaDiaria.length){
-    perdaEl.innerHTML=D.perdaDiaria.map(function(v,i){
+  // Popover de perda diária de concreto
+  var popRows=el('perda-pop-rows');
+  if(popRows&&D.perdaDiaria&&D.perdaDiaria.length){
+    popRows.innerHTML=D.perdaDiaria.map(function(v,i){
       var p=v!==null?v:0;
-      var clr=p>3?'#F85149':p>1?'#D29922':'#3FB950';
-      var bg =p>3?'rgba(248,81,73,0.12)':p>1?'rgba(210,153,34,0.12)':'rgba(63,185,80,0.10)';
+      var clr=p>3?'#F85149':p>1?'#D29922':p>0?'#3FB950':'#484F58';
       var lbl=v!==null?p.toFixed(1)+'%':'–';
-      return '<span class="perda-strip-val" style="color:'+clr+';background:'+bg+';" title="'+
-        (D.dates[i]||'')+': '+lbl+' perda">'+lbl+'</span>';
+      return '<div class="perda-pop-row">'
+        +'<span class="perda-pop-date">'+(D.dates[i]||'')+'</span>'
+        +'<span class="perda-pop-val" style="color:'+clr+';">'+lbl+'</span>'
+        +'</div>';
     }).join('');
-  } else if(perdaEl){
-    perdaEl.innerHTML='<span style="font-size:9px;color:#484F58;font-family:monospace;">sem dados</span>';
   }
 
   // Resumo
