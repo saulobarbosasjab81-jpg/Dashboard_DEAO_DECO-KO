@@ -170,6 +170,10 @@ h1{font-size:18px;font-weight:600;color:#E6EDF3;letter-spacing:.03em;}
 
 /* CHUVA */
 .rain-wrap{position:relative;width:100%;height:160px;}
+.perda-strip{margin-top:8px;border-top:0.5px solid #21262D;padding-top:6px;}
+.perda-strip-label{font-size:9px;color:#6E7681;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.perda-strip-vals{display:flex;gap:2px;}
+.perda-strip-val{flex:1;text-align:center;font-size:9px;font-family:'Courier New',monospace;padding:2px 1px;border-radius:3px;line-height:1.4;}
 
 /* PERDA CONCRETO */
 .quality-card{background:#161B22;border:0.5px solid #21262D;border-radius:8px;padding:16px 18px;}
@@ -324,6 +328,10 @@ footer{margin-top:22px;font-size:9px;color:#30363D;font-family:'Courier New',mon
     <div class="chart-title">Precipitação Diária</div>
     <div class="chart-sub">Chuva registrada (mm) — 09 a 22/mai/26</div>
     <div class="rain-wrap"><canvas id="rainChart" role="img" aria-label="Gráfico de chuva diária">Chuva diária em mm</canvas></div>
+    <div class="perda-strip">
+      <div class="perda-strip-label">Perda de Concreto (%/dia)</div>
+      <div id="perda-strip-vals" class="perda-strip-vals"></div>
+    </div>
   </div>
   <div class="quality-card">
     <div class="chart-title" style="margin-bottom:12px;">Resumo Executivo por Serviço</div>
@@ -378,6 +386,7 @@ function getSvcImpact(name,phase){
 
 const FALLBACK={
   elapsedDays:14,totalDays:30,chuvaAcum:55.5,perdaConcreto:3.90,
+  perdaDiaria:[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   dates:['09/05','10/05','11/05','12/05','13/05','14/05','15/05','16/05','17/05','18/05','19/05','20/05','21/05','22/05'],
   chuva:[3,0,5,4.5,8.5,0,2,0,11.5,0,2,6,12,1],
   services:[
@@ -443,7 +452,7 @@ function parseSheet(text){
     ];
 
     const seen=new Set(),services=[],chuvaArr=[];
-    let perdaConcreto=0,elapsedDays=0;
+    let perdaConcreto=0,perdaDiaria=[],elapsedDays=0;
 
     for(let i=dateRowIdx+1;i<lines.length;i++){
       if(!lines[i].trim()) continue;
@@ -474,6 +483,7 @@ function parseSheet(text){
         for(let d=0;d<elapsedDays;d++) chuvaArr.push(daily[d]||0);
       } else if(low.includes('perda')){
         perdaConcreto=acum;
+        perdaDiaria=daily.slice(0,elapsedDays).map(function(v){return v!==null?+(v>0&&v<=1?v*100:v).toFixed(1):null;});
       } else {
         const match=SVC_KEYS.find(function(k){return rawName.includes(k.kw);});
         if(match&&!seen.has(match.name)){
@@ -490,7 +500,7 @@ function parseSheet(text){
     const order=[...new Set(SVC_KEYS.map(function(k){return k.name;}))];
     services.sort(function(a,b){return order.indexOf(a.name)-order.indexOf(b.name);});
     const chuvaAcum=+chuvaArr.reduce(function(s,v){return s+v;},0).toFixed(1);
-    return {elapsedDays,totalDays:30,chuvaAcum,perdaConcreto,
+    return {elapsedDays,totalDays:30,chuvaAcum,perdaConcreto,perdaDiaria,
       dates:allDates.slice(0,elapsedDays),
       chuva:chuvaArr.slice(0,elapsedDays),
       services};
@@ -534,7 +544,7 @@ function parseGvizTable(table){
       {kw:'Descarregamento',name:'Descarregamento da Balsa',unit:'dia'},
       {kw:'Rampa',       name:'Execução da Rampa de Acesso ao Hangar',unit:'und'},
     ];
-    var seen=new Set(),services=[],chuvaArr=[],perdaConcreto=0,elapsedDays=0;
+    var seen=new Set(),services=[],chuvaArr=[],perdaConcreto=0,perdaDiaria=[],elapsedDays=0;
     for(var i=dateRowIdx+1;i<rows.length;i++){
       var cells=rows[i].c||[];
       var nc=cells[0];
@@ -558,6 +568,7 @@ function parseGvizTable(table){
         for(var d=0;d<elapsedDays;d++) chuvaArr.push(daily[d]||0);
       } else if(low.includes('perda')){
         perdaConcreto=acum>0&&acum<=1?+(acum*100).toFixed(2):acum;
+        perdaDiaria=daily.slice(0,elapsedDays).map(function(v){return v!==null?+(v>0&&v<=1?v*100:v).toFixed(1):null;});
       } else {
         var match=SVC_KEYS.find(function(k){return rawName.includes(k.kw);});
         if(match&&!seen.has(match.name)){
@@ -570,7 +581,7 @@ function parseGvizTable(table){
     var order=[...new Set(SVC_KEYS.map(function(k){return k.name;}))];
     services.sort(function(a,b){return order.indexOf(a.name)-order.indexOf(b.name);});
     var chuvaAcum=+chuvaArr.reduce(function(s,v){return s+v;},0).toFixed(1);
-    return {elapsedDays,totalDays:30,chuvaAcum,perdaConcreto,
+    return {elapsedDays,totalDays:30,chuvaAcum,perdaConcreto,perdaDiaria,
       dates:allDates.slice(0,elapsedDays),chuva:chuvaArr.slice(0,elapsedDays),services};
   } catch(e){console.error('parseGvizTable:',e);return null;}
 }
@@ -874,6 +885,21 @@ function render(data){
       scales:{x:{grid:{color:'rgba(33,38,45,0.8)'},ticks:{font:{size:9},color:'#484F58',maxRotation:45}},
         y:{grid:{color:'rgba(33,38,45,0.8)'},ticks:{font:{size:9},color:'#484F58',callback:function(v){return v+' mm';}}}}}
   });
+
+  // Strip de perda diária de concreto
+  var perdaEl=el('perda-strip-vals');
+  if(perdaEl&&D.perdaDiaria&&D.perdaDiaria.length){
+    perdaEl.innerHTML=D.perdaDiaria.map(function(v,i){
+      var p=v!==null?v:0;
+      var clr=p>3?'#F85149':p>1?'#D29922':'#3FB950';
+      var bg =p>3?'rgba(248,81,73,0.12)':p>1?'rgba(210,153,34,0.12)':'rgba(63,185,80,0.10)';
+      var lbl=v!==null?p.toFixed(1)+'%':'–';
+      return '<span class="perda-strip-val" style="color:'+clr+';background:'+bg+';" title="'+
+        (D.dates[i]||'')+': '+lbl+' perda">'+lbl+'</span>';
+    }).join('');
+  } else if(perdaEl){
+    perdaEl.innerHTML='<span style="font-size:9px;color:#484F58;font-family:monospace;">sem dados</span>';
+  }
 
   // Resumo
   const tbl=el('summary-table');
