@@ -369,6 +369,7 @@ const PHASE_IMPACTS={
   'Corte de Placas':{1:'',     2:'',      3:''},
   'Balsa':          {1:'',     2:'exec',  3:''},
   'Descarregamento':{1:'',     2:'exec',  3:''},
+  'Rampa':          {1:'',     2:'',      3:''},
 };
 function getSvcImpact(name,phase){
   for(var kw in PHASE_IMPACTS){if(name.includes(kw)) return PHASE_IMPACTS[kw][phase]||'';}
@@ -389,6 +390,7 @@ const FALLBACK={
     {name:'Selagem',                            unit:'m',   acum:856,   meta:4900,   pct:17.47,daily:[0,0,0,0,0,0,0,0,0,0,288,0,240,328]},
     {name:'Kit Drenante',                       unit:'kit', acum:330,   meta:1400,   pct:23.57,daily:[0,0,0,0,0,0,0,0,0,0,0,30,210,90]},
     {name:'Descarregamento da Balsa',           unit:'dia', acum:7,     meta:9,      pct:77.78,daily:[0,0,0,0,0,0,0,1,1,1,1,1,1,1]},
+    {name:'Execução da Rampa de Acesso ao Hangar',unit:'und',acum:0,    meta:0,      pct:0,    daily:[0,0,0,0,0,0,0,0,0,0,0,0,0,0]},
   ]
 };
 
@@ -437,6 +439,7 @@ function parseSheet(text){
       {kw:'Kit Drenante',       name:'Kit Drenante',                       unit:'kit'},
       {kw:'Balsa',              name:'Descarregamento da Balsa',           unit:'dia'},
       {kw:'Descarregamento',    name:'Descarregamento da Balsa',           unit:'dia'},
+      {kw:'Rampa',              name:'Execução da Rampa de Acesso ao Hangar',unit:'und'},
     ];
 
     const seen=new Set(),services=[],chuvaArr=[];
@@ -529,6 +532,7 @@ function parseGvizTable(table){
       {kw:'Kit Drenante',name:'Kit Drenante',unit:'kit'},
       {kw:'Balsa',       name:'Descarregamento da Balsa',unit:'dia'},
       {kw:'Descarregamento',name:'Descarregamento da Balsa',unit:'dia'},
+      {kw:'Rampa',       name:'Execução da Rampa de Acesso ao Hangar',unit:'und'},
     ];
     var seen=new Set(),services=[],chuvaArr=[],perdaConcreto=0,elapsedDays=0;
     for(var i=dateRowIdx+1;i<rows.length;i++){
