@@ -170,8 +170,8 @@ h1{font-size:18px;font-weight:600;color:#E6EDF3;letter-spacing:.03em;}
 
 /* CHUVA */
 .rain-wrap{position:relative;width:100%;height:160px;}
-.kpi-hint{font-size:9px;color:#484F58;margin-left:3px;cursor:help;opacity:.7;}
-#kpi-perda-wrap{position:relative;}
+.kpi-hint{display:inline-flex;align-items:center;justify-content:center;width:12px;height:12px;border-radius:50%;border:1px solid #484F58;font-size:8px;color:#484F58;margin-left:4px;cursor:help;line-height:1;font-style:normal;}
+#kpi-perda-wrap{position:relative;overflow:visible!important;}
 .perda-popover{
   display:none;position:absolute;top:calc(100% + 8px);left:50%;
   transform:translateX(-50%);background:#161B22;
@@ -265,7 +265,7 @@ footer{margin-top:22px;font-size:9px;color:#30363D;font-family:'Courier New',mon
     <div class="kpi-sub" id="kpi-chuva-sub">dias monitorados</div>
   </div>
   <div class="kpi gray" id="kpi-perda-wrap">
-    <div class="kpi-lbl">Perda de Concreto<span class="kpi-hint">ⓘ</span></div>
+    <div class="kpi-lbl">Perda de Concreto<em class="kpi-hint">i</em></div>
     <div class="kpi-val" id="kpi-perda">—</div>
     <div class="kpi-sub">Meta máx. 5,00%</div>
     <div class="perda-popover">
