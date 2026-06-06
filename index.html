@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -789,24 +789,25 @@ function render(data){
   el('kpi-perda').innerHTML=D.perdaConcreto.toFixed(1)+'<span style="font-size:12px">%</span>';
 
   const svcComMeta=D.services.filter(function(s){return s.meta>0;});
-  let nc=0,na=0,nr=0,nat=0;
+  let nc=0,ns=0,na=0,nr=0,nat=0;
   svcComMeta.forEach(function(s){
     const bm=getBenchmark(s,D.elapsedDays,D.totalDays);
     const dev=s.pct-bm;
-    if(s.pct>=100)  nc++;
+    if(s.pct>100)   ns++;
+    else if(s.pct>=100) nc++;
     else if(dev>0)  na++;
     else if(dev>=-5)nr++;
     else            nat++;
   });
-  el('kpi-concluido').textContent=nc;
+  el('kpi-concluido').textContent=nc+ns;
   el('kpi-adiantado').textContent=na;
   el('kpi-risco').textContent=nr;
   el('kpi-atrasado').textContent=nat;
 
   // Pizza
-  const pieL=['Concluído','Adiantado','Risco','Atrasado'];
-  const pieV=[nc,na,nr,nat];
-  const pieC=['#30A2FF','#3FB950','#D29922','#F85149'];
+  const pieL=['Superado','Concluído','Adiantado','Risco','Atrasado'];
+  const pieV=[ns,nc,na,nr,nat];
+  const pieC=['#3FB950','#30A2FF','#39D353','#D29922','#F85149'];
   const tot=svcComMeta.length||1;
   if(cP) cP.destroy();
   cP=new Chart(el('pieStatus'),{type:'pie',
