@@ -587,7 +587,7 @@ function parseGvizTable(table){
       var nv=function(c){return c&&c.v!==null&&c.v!==undefined?parseFloat(String(c.v))||0:0;};
       var acum=nv(cells[35]),meta=nv(cells[36]);
       var pctRaw=nv(cells[37]);
-      var pct=pctRaw>0&&pctRaw<=1?+(pctRaw*100).toFixed(2):pctRaw;
+      var pct=pctRaw>0&&pctRaw<100?+(pctRaw*100).toFixed(2):pctRaw;
       var low=rawName.toLowerCase();
       if(low.includes('chuva')){
         for(var d=0;d<elapsedDays;d++) chuvaArr.push(daily[d]||0);
@@ -827,9 +827,10 @@ function render(data){
     const isB=BLOCKED_NAMES.some(function(n){return s.name.includes(n.split(' ')[0]);});
     const isBa=s.name.includes('Balsa')||s.name.includes('Descarregamento');
     const dev=s.pct-bm;
-    const isDone=s.pct>=100, isAhead=!isDone&&dev>0;
+    const isOver=s.pct>100, isDone=s.pct>=100, isAhead=!isDone&&dev>0;
     let sc,sl,bc;
-    if(isDone)      {sc='done';sl='CONCLUÍDO';bc='#30A2FF';}
+    if(isOver)      {sc='done';sl='SUPERADO'; bc='#3FB950';}
+    else if(isDone) {sc='done';sl='CONCLUÍDO';bc='#30A2FF';}
     else if(isAhead){sc='ok';  sl='ADIANTADO';bc='#3FB950';}
     else if(dev>=-5){sc='warn';sl='ATENÇÃO';  bc='#D29922';}
     else            {sc='crit';sl='ATRASADO'; bc='#F85149';}
@@ -854,7 +855,8 @@ function render(data){
     const row=document.createElement('div');
     row.className='prog-row';
     row.innerHTML='<div><div class="prog-name">'+s.name+(impBadge?' <span style="display:inline-block;vertical-align:middle;">'+impBadge+'</span>':'')+'</div><div class="prog-unit">'+s.unit+badge+'</div></div>'
-      +'<div class="bar-track"><div class="bar-fill" style="width:'+Math.min(s.pct,100)+'%;background:'+bc+';"></div>'
+      +'<div class="bar-track"><div class="bar-fill" style="width:'+Math.min(s.pct,100)+'%;background:'+bc+';'+(isOver?'box-shadow:2px 0 6px '+bc+';':'')+'"></div>'
+      +(isOver?'<div style="position:absolute;right:0;top:-2px;bottom:-2px;width:3px;background:'+bc+';border-radius:2px;opacity:.8;"></div>':'')
       +'<div class="bar-plan-line" style="left:'+Math.min(bm,100)+'%;"></div></div>'
       +'<div class="prog-pct" style="color:'+bc+';">'+s.pct.toFixed(1)+'%</div>'
       +'<div class="prog-acum">'+af+' / '+mf+'</div>'
