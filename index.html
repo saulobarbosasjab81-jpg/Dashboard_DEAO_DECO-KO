@@ -903,10 +903,10 @@ function render(data){
   var popRows=el('perda-pop-rows');
   if(popRows&&D.perdaDiaria&&D.perdaDiaria.length){
     var diasComPerda=D.perdaDiaria.map(function(v,i){return {v:v,d:D.dates[i]||''};})
-      .filter(function(r){return r.v!==null&&r.v>0;});
+      .filter(function(r){return r.v!==null&&r.v!==0;});
     popRows.innerHTML=diasComPerda.length
       ?diasComPerda.map(function(r){
-          var clr=r.v>3?'#F85149':r.v>1?'#D29922':'#3FB950';
+          var clr=r.v<0?'#30A2FF':r.v>3?'#F85149':r.v>1?'#D29922':'#3FB950';
           return '<div class="perda-pop-row">'
             +'<span class="perda-pop-date">'+r.d+'</span>'
             +'<span class="perda-pop-val" style="color:'+clr+';">'+r.v.toFixed(1)+'%</span>'
