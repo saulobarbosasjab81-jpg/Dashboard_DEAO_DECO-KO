@@ -227,7 +227,7 @@ footer{margin-top:22px;font-size:9px;color:#30363D;font-family:'Courier New',mon
     <h1>PAINEL GERENCIAL</h1>
   </div>
   <div class="hdr-right">
-    <div class="period-badge">&#9679; Período: 09/05 – 07/06/2026 · 30 dias</div>
+    <div class="period-badge">&#9679; Período: 09/05 – 11/06/2026 · 34 dias</div>
     <div class="hdr-date" id="hdr-date">Última atualização: 22/05/2026 · Dia 14 de 30</div>
   </div>
 </header>
@@ -375,7 +375,7 @@ footer{margin-top:22px;font-size:9px;color:#30363D;font-family:'Courier New',mon
 
 <script>
 const CSV_URL='https://docs.google.com/spreadsheets/d/1kY05N5ujb_u393yEfw535fr1IFjkfaHN/gviz/tq?tqx=out:csv';
-const TOTAL_DAYS=30, BLOCKED_DAYS=9;
+const TOTAL_DAYS=34, BLOCKED_DAYS=9;
 const BLOCKED_NAMES=['Tratamento Borrachudo e Reciclagem','Canaletas','Placas de Concreto','Usinagem de Concreto'];
 const BALSA_NAME='Descarregamento da Balsa';
 const BALSA_START=8; // dia 8 = 16/05
@@ -401,7 +401,7 @@ function getSvcImpact(name,phase){
 }
 
 const FALLBACK={
-  elapsedDays:14,totalDays:30,chuvaAcum:55.5,perdaConcreto:3.90,
+  elapsedDays:14,totalDays:34,chuvaAcum:55.5,perdaConcreto:3.90,
   perdaDiaria:[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   dates:['09/05','10/05','11/05','12/05','13/05','14/05','15/05','16/05','17/05','18/05','19/05','20/05','21/05','22/05'],
   chuva:[3,0,5,4.5,8.5,0,2,0,11.5,0,2,6,12,1],
@@ -451,7 +451,7 @@ function parseSheet(text){
 
     const dateRow=parseCSVLine(lines[dateRowIdx]);
     const allDates=[];
-    for(let j=1;j<=30;j++){
+    for(let j=1;j<=34;j++){
       const d=(dateRow[j]||'').trim();
       if(d&&/\d{2}\/\d{2}/.test(d)) allDates.push(d.substring(0,5));
     }
@@ -482,9 +482,9 @@ function parseSheet(text){
       const rawName=(cols[0]||'').trim();
       if(!rawName) continue;
 
-      // Coleta valores diários (cols 1-30) com suporte a vírgula decimal
+      // Coleta valores diários (cols 1-34) com suporte a vírgula decimal
       const daily=[];let lastFilled=0;
-      for(let j=1;j<=30;j++){
+      for(let j=1;j<=34;j++){
         const raw=(cols[j]||'').trim();
         if(raw!==''&&raw!=='-'&&!/^[a-zA-Z#]/.test(raw)){
           daily.push(num(raw));
@@ -495,10 +495,10 @@ function parseSheet(text){
       }
       elapsedDays=Math.max(elapsedDays,lastFilled);
 
-      // Colunas de resumo (após os 30 dias)
-      const acum=num(cols[31]);
-      const meta=num(cols[32]);
-      const pct =num(cols[33]);
+      // Colunas de resumo (após os 34 dias)
+      const acum=num(cols[35]);
+      const meta=num(cols[36]);
+      const pct =num(cols[37]);
 
       const low=rawName.toLowerCase();
       if(low.includes('chuva')){
@@ -522,7 +522,7 @@ function parseSheet(text){
     const order=[...new Set(SVC_KEYS.map(function(k){return k.name;}))];
     services.sort(function(a,b){return order.indexOf(a.name)-order.indexOf(b.name);});
     const chuvaAcum=+chuvaArr.reduce(function(s,v){return s+v;},0).toFixed(1);
-    return {elapsedDays,totalDays:30,chuvaAcum,perdaConcreto,perdaDiaria,
+    return {elapsedDays,totalDays:TOTAL_DAYS,chuvaAcum,perdaConcreto,perdaDiaria,
       dates:allDates.slice(0,elapsedDays),
       chuva:chuvaArr.slice(0,elapsedDays),
       services};
@@ -546,7 +546,7 @@ function parseGvizTable(table){
     if(dateRowIdx<0) return null;
     var dateRow=rows[dateRowIdx].c||[];
     var allDates=[];
-    for(var j=1;j<=30;j++){
+    for(var j=1;j<=34;j++){
       var cell=dateRow[j];
       var f=cell?String(cell.f||'').trim():'';
       var v=cell?String(cell.v||'').trim():'';
@@ -576,7 +576,7 @@ function parseGvizTable(table){
       var rawName=String(nc?(nc.v||nc.f||''):'').trim();
       if(!rawName) continue;
       var daily=[],lastFilled=0;
-      for(var j=1;j<=30;j++){
+      for(var j=1;j<=34;j++){
         var cell=cells[j];
         var v=cell&&cell.v!==null&&cell.v!==undefined?cell.v:null;
         if(v!==null&&v!==''&&!isNaN(parseFloat(String(v)))){
@@ -585,8 +585,8 @@ function parseGvizTable(table){
       }
       elapsedDays=Math.max(elapsedDays,lastFilled);
       var nv=function(c){return c&&c.v!==null&&c.v!==undefined?parseFloat(String(c.v))||0:0;};
-      var acum=nv(cells[31]),meta=nv(cells[32]);
-      var pctRaw=nv(cells[33]);
+      var acum=nv(cells[35]),meta=nv(cells[36]);
+      var pctRaw=nv(cells[37]);
       var pct=pctRaw>0&&pctRaw<=1?+(pctRaw*100).toFixed(2):pctRaw;
       var low=rawName.toLowerCase();
       if(low.includes('chuva')){
@@ -606,7 +606,7 @@ function parseGvizTable(table){
     var order=[...new Set(SVC_KEYS.map(function(k){return k.name;}))];
     services.sort(function(a,b){return order.indexOf(a.name)-order.indexOf(b.name);});
     var chuvaAcum=+chuvaArr.reduce(function(s,v){return s+v;},0).toFixed(1);
-    return {elapsedDays,totalDays:30,chuvaAcum,perdaConcreto,perdaDiaria,
+    return {elapsedDays,totalDays:TOTAL_DAYS,chuvaAcum,perdaConcreto,perdaDiaria,
       dates:allDates.slice(0,elapsedDays),chuva:chuvaArr.slice(0,elapsedDays),services};
   } catch(e){console.error('parseGvizTable:',e);return null;}
 }
