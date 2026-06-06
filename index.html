@@ -391,6 +391,9 @@ const PHASE_IMPACTS={
   'Balsa':          {1:'',     2:'exec',  3:''},
   'Descarregamento':{1:'',     2:'exec',  3:''},
   'Rampa':          {1:'',     2:'',      3:''},
+  'Drenagem Lateral':{1:'',    2:'',      3:''},
+  '2.875':          {1:'',     2:'',      3:''},
+  '3.665':          {1:'',     2:'',      3:''},
 };
 function getSvcImpact(name,phase){
   for(var kw in PHASE_IMPACTS){if(name.includes(kw)) return PHASE_IMPACTS[kw][phase]||'';}
@@ -413,6 +416,9 @@ const FALLBACK={
     {name:'Kit Drenante',                       unit:'kit', acum:330,   meta:1400,   pct:23.57,daily:[0,0,0,0,0,0,0,0,0,0,0,30,210,90]},
     {name:'Descarregamento da Balsa',           unit:'dia', acum:7,     meta:9,      pct:77.78,daily:[0,0,0,0,0,0,0,1,1,1,1,1,1,1]},
     {name:'Execução da Rampa de Acesso ao Hangar',unit:'und',acum:0,    meta:0,      pct:0,    daily:[0,0,0,0,0,0,0,0,0,0,0,0,0,0]},
+    {name:'Piso da Drenagem Lateral do Pátio 30,5m',unit:'und',acum:0, meta:0,      pct:0,    daily:[0,0,0,0,0,0,0,0,0,0,0,0,0,0]},
+    {name:'Descarregamento da Balsa 2.875 sacos',  unit:'dia',acum:0,  meta:0,      pct:0,    daily:[0,0,0,0,0,0,0,0,0,0,0,0,0,0]},
+    {name:'Descarregamento da Balsa 3.665 sacos',  unit:'dia',acum:0,  meta:0,      pct:0,    daily:[0,0,0,0,0,0,0,0,0,0,0,0,0,0]},
   ]
 };
 
@@ -459,6 +465,9 @@ function parseSheet(text){
       {kw:'Usinagem',           name:'Usinagem de Concreto',               unit:'m³'},
       {kw:'Selagem',            name:'Selagem',                            unit:'m'},
       {kw:'Kit Drenante',       name:'Kit Drenante',                       unit:'kit'},
+      {kw:'Drenagem Lateral',   name:'Piso da Drenagem Lateral do Pátio 30,5m',unit:'und'},
+      {kw:'2.875',              name:'Descarregamento da Balsa 2.875 sacos',  unit:'dia'},
+      {kw:'3.665',              name:'Descarregamento da Balsa 3.665 sacos',  unit:'dia'},
       {kw:'Balsa',              name:'Descarregamento da Balsa',           unit:'dia'},
       {kw:'Descarregamento',    name:'Descarregamento da Balsa',           unit:'dia'},
       {kw:'Rampa',              name:'Execução da Rampa de Acesso ao Hangar',unit:'und'},
@@ -553,6 +562,9 @@ function parseGvizTable(table){
       {kw:'Usinagem',   name:'Usinagem de Concreto',unit:'m³'},
       {kw:'Selagem',    name:'Selagem',unit:'m'},
       {kw:'Kit Drenante',name:'Kit Drenante',unit:'kit'},
+      {kw:'Drenagem Lateral',name:'Piso da Drenagem Lateral do Pátio 30,5m',unit:'und'},
+      {kw:'2.875',           name:'Descarregamento da Balsa 2.875 sacos',  unit:'dia'},
+      {kw:'3.665',           name:'Descarregamento da Balsa 3.665 sacos',  unit:'dia'},
       {kw:'Balsa',       name:'Descarregamento da Balsa',unit:'dia'},
       {kw:'Descarregamento',name:'Descarregamento da Balsa',unit:'dia'},
       {kw:'Rampa',       name:'Execução da Rampa de Acesso ao Hangar',unit:'und'},
@@ -682,6 +694,12 @@ function buildPhaseTimeline(data){
   var f2Int=[
     {n:'Trincheira Drenante',lv:'inter'},{n:'Selagem',lv:'inter'},{n:'Kit Drenante',lv:'inter'}
   ];
+  var f3List=[
+    {n:'Piso da Drenagem Lateral',lv:'direct'},
+    {n:'Descarregamento Balsa 2.875 sc',lv:'direct'},
+    {n:'Descarregamento Balsa 3.665 sc',lv:'direct'},
+    {n:'Execução da Rampa de Acesso',lv:'direct'}
+  ];
   function makeImpactRow(it){
     return '<div class="ph-impact-row"><span class="ph-dot '+it.lv+'"></span><span>'+it.n+'</span>'
       +'<span class="ph-lv '+(it.lv==='direct'?'direct-lv':'inter-lv')+'">'+
@@ -706,6 +724,8 @@ function buildPhaseTimeline(data){
     +'<div class="ph-impact-row" style="color:#3FB950;font-size:10px;">✓ Todos os serviços em ritmo máximo</div>'
     +'<div class="ph-impact-row" style="color:#6E7681;font-size:9px;margin-top:4px;">Combustível e cimento disponíveis</div>'
     +'<div class="ph-impact-row" style="color:#6E7681;font-size:9px;">Balsa já descarregada</div>'
+    +'<div style="font-size:8px;color:#484F58;font-family:\'Courier New\',monospace;text-transform:uppercase;letter-spacing:.06em;margin-top:8px;padding-top:6px;border-top:0.5px solid #21262D;">Serviços desta fase</div>'
+    +f3List.map(makeImpactRow).join('')
     +'</div>'
     +'</div>'
     +'</div>';
